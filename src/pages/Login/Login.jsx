@@ -2,12 +2,18 @@ import { nanoid } from '@reduxjs/toolkit'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import s from './Login.module.css'
 import { Link } from 'react-router-dom'
+import * as Yup from "yup"
 
 const Login = () => {
 	const initialValues = {
 		email: '',
 		password: '',
 	}
+
+	const validationSchema = Yup.object({
+		email: Yup.string().required(),
+		password: Yup.string().min(8, "Min 8 letter").max(32, "Max 32 letter").required()
+	})
 
 	const onFormSubmit = (value, action) => {
 		console.log(value)
@@ -18,14 +24,15 @@ const Login = () => {
 	const passwordId = nanoid()
 
 	return (
+	<div className={s.container}>
 		<div className={s.loginWrapper}>
 			<div className={s.formWrapper}>
-				<Formik initialValues={initialValues} onSubmit={onFormSubmit}>
-					<Form className={s.form}>
-						<button className={s.loginByGoogleBtn} type='button'>
+				<Formik initialValues={initialValues} onSubmit={onFormSubmit} validationSchema={validationSchema}>
+					<Form className={s.loginForm}>
+						<button className={s.googleButton} type='button'>
 							Google
 						</button>
-						<div className={s.formFieldWrapper}>
+						<div className={s.fields}>
 							<div className={s.fieldWrapper}>
 								<label htmlFor={emailId}>
 									Електронна адреса <sup>*</sup>
@@ -37,7 +44,7 @@ const Login = () => {
 									placeholder='your@email.com'
 									id={emailId}
 								/>
-								<ErrorMessage name='email' component={'span'} />
+								<ErrorMessage className={s.error} name='email' component={'span'} />
 							</div>
 							<div className={s.fieldWrapper}>
 								<label htmlFor={passwordId}>
@@ -51,25 +58,26 @@ const Login = () => {
 									placeholder='Пароль'
 									id={passwordId}
 								/>
-								<ErrorMessage name='password' component={'span'} />
+								<ErrorMessage className={s.error} name='password' component={'span'} />
 							</div>
-							<button className={s.loginBtn} type='submit'>
+						</div>
+							<button className={s.loginButton} type='submit'>
 								Увійти
 							</button>
 							<Link className={s.registerLink} to='/registration'>
 								Реєстрація
 							</Link>
-						</div>
 					</Form>
 				</Formik>
 			</div>
-			<div className={s.loginInfo}>
-				<span className={s.symbol}>“</span>
-				<p className={s.loginTitle}>
+			<div className={s.loginQuote}>
+				<span className={s.quoteMark}>“</span>
+				<p className={s.quoteText}>
 					Книги — это корабли мысли, странствующие по волнам времени и бережно
 					несущие свой драгоценный груз от поколения к поколению.
 				</p>
 				<span className={s.quoteAuthor}>Бэкон Ф.</span>
+			</div>
 			</div>
 		</div>
 	)
